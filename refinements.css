@@ -46,6 +46,9 @@ main h2 em,.section-heading h2 em,.together-copy h2 em{font-size:inherit;line-he
 @media(prefers-reduced-motion:reduce){.motion-reveal,.motion-mask{opacity:1;transform:none;clip-path:none;transition:none}.parallax-media{animation:none!important}.pill-cta,.primary-cta,.featured-menu-card img{transition:none!important}}
 @media(max-width:900px){.hero-copy{left:14px!important;right:14px!important;padding:0!important}.hero-copy h1{font-size:28px!important;line-height:33px!important}.hero-copy p{font-size:12px!important;line-height:1.45}.command-search{left:16px!important;width:calc(100vw - 32px)!important;transform:none!important}.hero-copy .pill-cta{padding:10px 12px!important;font-size:11px!important}}
 .motion-reveal,.motion-mask{opacity:1!important;visibility:visible!important;transform:none!important;clip-path:none!important}
+.reveal-up{opacity:1!important;visibility:visible!important;transform:none!important}
+.hero-bakery,.hero-coffee{position:relative;inset:auto;grid-column:auto;grid-row:auto;-webkit-mask:none!important;mask:none!important}
+.hero-glyph-clip{display:none!important}
 .product-slide img,.event-slide img,.instagram-track img,.guest-image img,.featured-menu-card img,.craft-feature img{opacity:1!important;visibility:visible!important}
 .footer-word{display:none!important}
 .pill-cta,.primary-cta,.instagram .section-heading>a,.footer-newsletter button{background:var(--plum)!important;color:var(--white)!important;border:0!important;box-shadow:none!important;text-shadow:none!important;backdrop-filter:none!important}
