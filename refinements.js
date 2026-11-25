@@ -3,6 +3,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const $$ = (selector, context = document) => [...context.querySelectorAll(selector)];
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const menuButton = $('.menu-button');
+  const megaMenu = $('#mega-menu');
+  const megaClose = $('.mega-close');
+  let menuWasOpenedBy = null;
+  const setMegaMenu = open => {
+    if (!menuButton || !megaMenu) return;
+    megaMenu.classList.toggle('open', open);
+    megaMenu.setAttribute('aria-hidden', String(!open));
+    menuButton.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('locked', open);
+    if (open) {
+      menuWasOpenedBy = document.activeElement;
+      window.setTimeout(() => megaClose?.focus(), 180);
+    } else if (menuWasOpenedBy instanceof HTMLElement) {
+      menuWasOpenedBy.focus();
+    }
+  };
+  menuButton?.addEventListener('click', () => setMegaMenu(!megaMenu?.classList.contains('open')));
+  megaClose?.addEventListener('click', () => setMegaMenu(false));
+  $$('.mega-menu a').forEach(link => link.addEventListener('click', () => setMegaMenu(false)));
+  document.addEventListener('keydown', event => {
+    if (!megaMenu?.classList.contains('open')) return;
+    if (event.key === 'Escape') setMegaMenu(false);
+    if (event.key !== 'Tab') return;
+    const focusable = $$('a[href], button:not([disabled])', megaMenu);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+  $$('.hero-side video').forEach(video => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+    const startVideo = () => video.play().catch(() => {});
+    video.addEventListener('loadeddata', startVideo, {once: true});
+    startVideo();
+  });
+  $('.footer-brand p')?.remove();
   const loopTimers = new WeakMap();
   const makeInfinite = (track, interval = 4200) => {
     if (!track || reduceMotion || track.dataset.loopReady === 'true') return;
@@ -158,8 +199,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const previous = /prev/i.test(button.className);
     button.innerHTML = `<i class="fa-solid fa-arrow-${previous ? 'left' : 'right'}" aria-hidden="true"></i>`;
   });
-  const menuButton = $('.menu-button');
-  if (menuButton) menuButton.innerHTML = '<span>Explore</span><i class="fa-solid fa-bars" aria-hidden="true"></i>';
+  const megaImage = $('.mega-visual img');
+  const megaCaption = $('.mega-visual figcaption');
+  const updateMegaVisual = link => {
+    if (!megaImage) return;
+    megaImage.classList.add('is-changing');
+    window.setTimeout(() => {
+      megaImage.src = link.dataset.image;
+      megaImage.alt = link.querySelector('strong')?.textContent || 'Roastique';
+      if (megaCaption) megaCaption.textContent = link.dataset.caption || '';
+      megaImage.classList.remove('is-changing');
+    }, 140);
+  };
+  $$('.mega-primary a').forEach(link => {
+    link.addEventListener('mouseenter', () => updateMegaVisual(link));
+    link.addEventListener('focus', () => updateMegaVisual(link));
+  });
   const triggerIcon = $('.command-trigger i');
   if (triggerIcon) triggerIcon.outerHTML = '<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>';
   const closeIcon = $('.search-close');
